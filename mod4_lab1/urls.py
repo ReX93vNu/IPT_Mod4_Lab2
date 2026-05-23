@@ -19,7 +19,7 @@ from django.urls import path
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
-from core.views import StudentRecordViewSet, secure_login_test
+from core.views import StudentRecordViewSet, login_view, secure_payment_api
 
 router = DefaultRouter()
 router.register(r'student-records', StudentRecordViewSet, basename='student-record')
@@ -30,5 +30,6 @@ urlpatterns = [
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('api/', include(router.urls)),
-    path('api/secure-login/', secure_login_test, name='secure_login_test'),
+    path('api/login/', login_view, name='api-login'),
+    path('api/secure-payment/', secure_payment_api, name='secure-payment'),
 ]

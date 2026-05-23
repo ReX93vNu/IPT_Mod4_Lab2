@@ -1,14 +1,20 @@
-from django.shortcuts import render
+import logging
+
+from django.http import JsonResponse
+from django.contrib.auth import authenticate  
+
 from rest_framework.viewsets import ModelViewSet
-from rest_framework.permissions import IsAuthenticated
-from .models import StudentRecord
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.decorators import api_view, permission_classes
+
+from django_ratelimit.decorators import ratelimit
+from cryptography.fernet import InvalidToken
+
+from core.models import StudentRecord, cipher  
 from core.serializers import StudentRecordSerializer
 from core.permissions import IsAdminGroup, IsAdminOrFacultyGroup
-import logging
-from django_ratelimit.decorators import ratelimit
-from django.http import JsonResponse
 
-logger = logging.getLogger('django')
+logger = logging.getLogger('core')
 
 class StudentRecordViewSet(ModelViewSet):
     serializer_class = StudentRecordSerializer
@@ -37,7 +43,39 @@ class StudentRecordViewSet(ModelViewSet):
         else:
             serializer.save(owner=self.request.user)
 
-@ratelimit(key='ip', rate='5/m', block=True)
-def secure_login_test(request):
-    logger.warning("Multiple failed login attempts detected from IP: %s", request.META.get('REMOTE_ADDR'))
-    return JsonResponse({"message": "Login attempt processed securely."})
+
+# login api for username and pass with bruteforce protection. Just realized this might be redundant since i merged this with mod4_lab1 
+@ratelimit(key='ip', rate='5/m', block=True) 
+@api_view(['POST'])
+@permission_classes([AllowAny]) 
+def login_view(request):
+    
+    username = request.data.get('username')
+    password = request.data.get('password')
+    
+    user = authenticate(username=username, password=password)
+    
+    if user is not None:
+        return JsonResponse({"message": "Login successful! Proceed to payment endpoint."})
+    else:
+        logger.warning("Multiple failed login attempts detected from IP: %s", request.META.get('REMOTE_ADDR'))
+        return JsonResponse({"error": "Invalid credentials. Unauthorized."}, status=401)
+
+
+# payment api with encrypted payload and decryption and bruteforce protection. i cant figure out how to apply the encrypted payload decryption part with the provided ratelimit code, so seperated them instead.
+@ratelimit(key='ip', rate='5/m', block=True) 
+@api_view(['POST'])
+@permission_classes([IsAuthenticated]) # cant add a custom log message because authentication is handled by django. i cant figure out how to make it work while also satsifying the requirements
+def secure_payment_api(request):
+    
+    encrypted_data = request.data.get('secret_data', '')
+    
+    try:
+        cipher.decrypt(encrypted_data.encode('utf-8'))
+        return JsonResponse({"message": "Secure payment processed successfully."})
+        
+    except InvalidToken:
+        logger.warning("SECURITY ALERT: Invalid encrypted payload spam detected")
+        return JsonResponse({"error": "Invalid encrypted payload detected."}, status=400)
+    except Exception:
+        return JsonResponse({"error": "Malformed request."}, status=400)

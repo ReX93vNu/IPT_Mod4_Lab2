@@ -154,10 +154,12 @@ LOGGING = {
         },
     },
     'loggers': {
-        'django': {
+        # This targets ONLY your security alerts
+        'core': { 
             'handlers': ['security_file'],
             'level': 'WARNING',
             'propagate': True,
         },
     },
 }
+
