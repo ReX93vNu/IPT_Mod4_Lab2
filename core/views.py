@@ -4,6 +4,11 @@ from rest_framework.permissions import IsAuthenticated
 from .models import StudentRecord
 from core.serializers import StudentRecordSerializer
 from core.permissions import IsAdminGroup, IsAdminOrFacultyGroup
+import logging
+from django_ratelimit.decorators import ratelimit
+from django.http import JsonResponse
+
+logger = logging.getLogger('django')
 
 class StudentRecordViewSet(ModelViewSet):
     serializer_class = StudentRecordSerializer
@@ -31,3 +36,8 @@ class StudentRecordViewSet(ModelViewSet):
             serializer.save(owner_id=owner_id)
         else:
             serializer.save(owner=self.request.user)
+
+@ratelimit(key='ip', rate='5/m', block=True)
+def secure_login_test(request):
+    logger.warning("Multiple failed login attempts detected from IP: %s", request.META.get('REMOTE_ADDR'))
+    return JsonResponse({"message": "Login attempt processed securely."})

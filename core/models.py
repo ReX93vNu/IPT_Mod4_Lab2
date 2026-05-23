@@ -1,8 +1,14 @@
 from django.db import models
 from django.contrib.auth.models import User
+import os
+from dotenv import load_dotenv
 from cryptography.fernet import Fernet
 
-FERNET_KEY = b'L7z_uTf1hA6F3rV-A5_pS-7YqP8H_rJ9Yp4q1VwY8s0='
+# leaked the bloody key in github. now in an .env file
+load_dotenv()
+
+raw_key = os.getenv('FERNET_KEY')
+FERNET_KEY = raw_key.encode('utf-8')
 cipher = Fernet(FERNET_KEY)
 
 class StudentRecord(models.Model):
