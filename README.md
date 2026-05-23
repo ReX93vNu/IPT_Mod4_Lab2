@@ -1,49 +1,30 @@
-# IPT_Mod4_Lab1 
-by a barely functioning studint
+# IPT_Mod4_Lab2
+by a potato
+
+Reusing the old Mod4_lab1 activity by simply adding a payment api for tuition scenarios.
 
 A Lab activity to satisfy the following:
 
 Problem Scenario 
+You are building a Secure Payment API that handles sensitive user information. 
 
-You are developing a Secure Student Records API. 
-The system must: 
-● Authenticate users using JWT.
+The system must be able to.
+● Encrypt sensitive fields.
+Encypted credit card info:
+<img width="921" height="329" alt="image" src="https://github.com/user-attachments/assets/32c32c3d-abfa-433b-8b3d-96ed7f0918da" />
 
-  student auth:
-  <img width="1283" height="802" alt="Screenshot 2026-05-23 040957" src="https://github.com/user-attachments/assets/3b2b8075-0200-47f6-b7b1-afda167fc3ab" />
+● Hash passwords securely.
+Hashed user password with argon2:
+<img width="900" height="296" alt="image" src="https://github.com/user-attachments/assets/06947b40-a15f-4fb8-a399-f5f14e762b32" />
 
-● Allow only admins to create or delete student records.
+● Prevent brute-force attacks.
 
-  Admin succesful creation of student record:
-  <img width="1279" height="798" alt="image" src="https://github.com/user-attachments/assets/2ae21601-1487-4d3b-8577-f94477acad16" />
+● Log security-related events.
 
-  Admin succesful account deletion:
-  <img width="1280" height="800" alt="image" src="https://github.com/user-attachments/assets/11b15a93-0593-45be-b854-2833b17ab2b5" />
 
-  Faculty (or students) unable to add or delete a student record:
-  Acc creation denial:
-  <img width="1278" height="800" alt="image" src="https://github.com/user-attachments/assets/a70191f4-8d9d-4a70-bb26-6f2f7fb71cb3" />
+Students must test.
+● Access without authentication.
 
-  Acc deletion denial:
-  <img width="1277" height="797" alt="image" src="https://github.com/user-attachments/assets/8785ac47-fbbe-4db8-a47e-12334b62e591" />
+● Excessive API requests.
 
-● Allow faculty to view and update records.
-
-  Faculty auth:
-  <img width="1284" height="803" alt="image" src="https://github.com/user-attachments/assets/30d72592-a29a-4462-8334-4bd1c177f8f9" />
-
-  Faculty editing record 1:
-  Before:
-  <img width="1283" height="804" alt="Screenshot 2026-05-23 041019" src="https://github.com/user-attachments/assets/f1d9129a-bf3b-40ae-86df-148764fa57c7" />
-
-  After:
-  <img width="1289" height="805" alt="image" src="https://github.com/user-attachments/assets/9522388c-194d-46eb-9885-124e8b90e2a2" />
-
-● Allow students to view only their own record.
-
-  Student 2 can view their record
-  <img width="1280" height="796" alt="image" src="https://github.com/user-attachments/assets/f644babd-e986-4537-9f52-0eab1c8cedce" />
-
-  But cant view or get student 1's
-  <img width="1275" height="796" alt="image" src="https://github.com/user-attachments/assets/af651447-041e-44c1-9ecd-46a24a42b558" />
-
+● Invalid encrypted payloads.
